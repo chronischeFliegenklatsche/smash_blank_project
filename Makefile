@@ -3,7 +3,7 @@ CC = gcc
 CXX = g++
 
 # Smash
-SMASH = C:/smash
+SMASH = ../smash
 SMASH_INCLUDE_DIR := $(SMASH)/include
 SMASH_DEP_DIR := $(SMASH)/depends
 SMASH_DEP_STATIC_DIR := $(SMASH_DEP_DIR)/static
@@ -22,6 +22,7 @@ SMASH_DLLS := $(SMASH_DEP_DLLS) $(SMASH_BIN_DLLS)
 # Update smash
 update_smash:
 	cd $(SMASH) && git pull
+	cd $(SMASH) && $(MAKE) all
 
 # Automatically update smash
 .PHONY: update_smash
