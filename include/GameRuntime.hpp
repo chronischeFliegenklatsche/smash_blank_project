@@ -9,12 +9,4 @@ public:
     ~GameRuntime() override;
 };
 
-void _SMASH_GAME_LIFETIME()
-{
-    // Construct game runtime
-    GameRuntime gameRuntime;
-
-    // Provide default engine loop
-    _SMASH_ENGINE_LOOP(gameRuntime);
-}
 #endif

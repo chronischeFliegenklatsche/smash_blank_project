@@ -1,16 +1,10 @@
 
 #include <GameRuntime.hpp>
 
-#ifdef ARDUINO
-#include <Arduino.h>
-void setup()
+#ifdef _WIN32
+int main()
 {
     GameRuntime gameRuntime;
     _SMASH_ENGINE_LOOP(gameRuntime);
-}
-
-void loop()
-{
-    exit(0);
 }
 #endif
