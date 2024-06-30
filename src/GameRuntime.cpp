@@ -40,6 +40,7 @@ GameRuntime::GameRuntime() : smash::Runtime() {
     {
         smash::InputDetection::setInputAPI(inputAPI);
     }
+    
 
     // Set up rendering API
     std::shared_ptr<smash::RenderingAPI> renderingAPI;
@@ -58,13 +59,17 @@ GameRuntime::GameRuntime() : smash::Runtime() {
     );
     renderingAPI = std::make_shared<smash::RgbMatrixRenderingAPI>(mxconfig);
 #endif
+
+
 #ifdef _WIN32
     renderingAPI = std::make_shared<smash::GLRenderingAPI>();
+    
 #endif
     if (renderingAPI)
     {
         smash::Rendering::setRenderingAPI(renderingAPI);
     }
+    
 }
 
 void GameRuntime::pipe() const {
