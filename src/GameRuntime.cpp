@@ -19,55 +19,61 @@
 #include "Scenes/SampleScene.cpp"
 
 GameRuntime::GameRuntime() : smash::Runtime() {
+
     // Set up game data and scene management
-    std::shared_ptr<smash::Scene> mainScene = std::static_pointer_cast<smash::Scene>(std::make_shared<SampleScene>()); // replace nullptr with initial scene
-    
-    if (mainScene)
     {
-        smash::SceneManagement::addScene(mainScene);
-        smash::SceneManagement::setActiveScene(mainScene.get());
+        std::shared_ptr<smash::Scene> mainScene = std::static_pointer_cast<smash::Scene>(std::make_shared<SampleScene>());
+
+        if (mainScene)
+        {
+            smash::SceneManagement::addScene(mainScene);
+            smash::SceneManagement::setActiveScene(0);
+        }
     }
     
     // Set up input API
-    std::shared_ptr<smash::InputAPI> inputAPI;
+    {
+    std::unique_ptr<smash::InputAPI> inputAPI;
 #ifdef ESP32
-    inputAPI = std::make_shared<smash::ArduinoInputAPI>();
+        inputAPI = std::make_unique<smash::ArduinoInputAPI>();
 #endif
 #ifdef _WIN32
-    inputAPI = std::make_shared<smash::GLInputAPI>();
+        inputAPI = std::make_unique<smash::GLInputAPI>();
 #endif
-    if (inputAPI)
-    {
-        smash::InputDetection::setInputAPI(inputAPI);
+        if (inputAPI)
+        {
+            smash::InputDetection::bindInputAPI(std::move(inputAPI));
+        }
     }
     
 
     // Set up rendering API
-    std::shared_ptr<smash::RenderingAPI> renderingAPI;
+    {
+        std::unique_ptr<smash::RenderingAPI> renderingAPI;
 #ifdef ESP32
-    // Configure matrix
-    HUB75_I2S_CFG::i2s_pins _pins = {
-        R1_PIN, G1_PIN, B1_PIN, R2_PIN, G2_PIN, B2_PIN,
-        A_PIN, B_PIN, C_PIN, D_PIN, E_PIN, LAT_PIN, OE_PIN, CLK_PIN
-    };
+        // Configure matrix
+        HUB75_I2S_CFG::i2s_pins _pins = {
+            R1_PIN, G1_PIN, B1_PIN, R2_PIN, G2_PIN, B2_PIN,
+            A_PIN, B_PIN, C_PIN, D_PIN, E_PIN, LAT_PIN, OE_PIN, CLK_PIN
+        };
 
-    HUB75_I2S_CFG mxconfig(
-        64,   // Module width
-        32,   // Module height
-        1,    // Chain length
-        _pins // Pin mapping
-    );
-    renderingAPI = std::make_shared<smash::RgbMatrixRenderingAPI>(mxconfig);
+        HUB75_I2S_CFG mxconfig(
+            64,   // Module width
+            32,   // Module height
+            1,    // Chain length
+            _pins // Pin mapping
+        );
+        renderingAPI = std::make_unique<smash::RgbMatrixRenderingAPI>(mxconfig);
 #endif
-
 
 #ifdef _WIN32
-    renderingAPI = std::make_shared<smash::GLRenderingAPI>();
-    
+        renderingAPI = std::make_unique<smash::GLRenderingAPI>();
+        
 #endif
-    if (renderingAPI)
-    {
-        smash::Rendering::setRenderingAPI(renderingAPI);
+        if (renderingAPI)
+        {
+            smash::Rendering::bindRenderingAPI(std::move(renderingAPI));
+        }
     }
     
 }
